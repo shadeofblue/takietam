@@ -8,6 +8,7 @@ authors = ["shadeofblue <blue@wave460.net>"]
 python = "^3.8"
 attrs = "^21.2.0"
 aiostream = "^0.4.4"
+mypy = "^0.920"
 
 [tool.poetry.dev-dependencies]
 
