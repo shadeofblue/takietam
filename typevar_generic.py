@@ -1,4 +1,4 @@
-from typing import TypeVar, Type
+from typing import TypeVar, Type, Generic, List
 
 
 class Base:
@@ -36,7 +36,67 @@ print(a.a)
 b = instantiate(B, 2)
 print(b.b)
 
-# invalid, but type checkers still know that c is of type C
-c = instantiate(C, 3)  # type: ignore
+# type-invalid, but type checkers still know that c is of type C
+c = instantiate(C, 3)
 print(c.c)
+
+
+class Factory(Generic[S]):
+
+    @staticmethod
+    def instantiate(cls: Type[S], *args, **kwargs) -> S:
+        return cls(*args, **kwargs)
+
+
+f: Factory[A] = Factory()
+
+# valid
+ia = f.instantiate(A, "F1")
+print(ia.a)
+
+# type-invalid, the factory is expected to be used only with A
+ib = f.instantiate(B, "F2")  # type: ignore
+print(ib.b)  # type: ignore
+
+# valid factory
+g: Factory[B] = Factory()
+
+# type-invalid factory, since we only allow Factories to accept anything based on Base
+h: Factory[C] = Factory()
+
+
+T = TypeVar("T", str, int)
+
+
+def add(a: T, b: T) -> T:
+    return a+b
+
+
+print(add(1, 2))
+
+
+print(add("a", "b"))
+
+
+# type-invalid (and won't run, but that's not the point)
+# print(add(1, "a"))
+
+def append_and_print_sum(l: List[T], a: T):
+    l.append(a)
+    s = l.pop(0)
+    while len(l):
+        s += l.pop(0)
+
+    print(s)
+
+
+# valid
+append_and_print_sum([1, 2, 3], 4)
+
+# valid
+append_and_print_sum(["a", "b", "c"], "d")
+
+
+# type-invalid (and won't run...)
+# append_and_print_sum(["a", "b", "c"], 7)
 
