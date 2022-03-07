@@ -1,5 +1,6 @@
 import asyncio
 import itertools
+from typing import AsyncGenerator, AsyncIterator
 
 
 async def numbers(delay: int = 1):
@@ -12,12 +13,39 @@ async def numbers(delay: int = 1):
         try:
             yield i
         except GeneratorExit:
+            print("---------------------------------- GENERATOR EXIT")
+            import traceback
+            traceback.print_stack()
             generator_exit = True
+        except:
+            print("---------------------------------- GENRATOR THROW")
+            raise
 
         print("after", i)
 
         if generator_exit:
             break
+
+
+class ClassGen(AsyncIterator):
+    def __init__(self):
+        self.done = False
+        self.g = itertools.count()
+
+    async def asend(self, __value):
+        return await super().asend(__value)
+
+    async def athrow(self, __typ, __val = None, __tb = None):
+        self.done = True
+        return await super().athrow(__typ, __val, __tb)
+
+    async def aclose(self):
+        self.done = True
+
+    async def __anext__(self):
+        if self.done:
+            raise StopAsyncIteration()
+        return self.g.__next__()
 
 
 async def worker(gen, cutoff=None):
@@ -31,7 +59,7 @@ async def worker(gen, cutoff=None):
 
             # the generator correctly receives the exception as long as the code calling this
             # worker passes the exception to the generator
-            # raise Exception("a")
+            raise Exception("a")
 
             # this correctly bubbles upwards
             await gen.aclose()
@@ -46,9 +74,12 @@ async def main(cutoff):
         async for w in worker(nums, cutoff):
             print(w)
     except Exception as e:
+        print("----------------------------------------------------------------------", e)
         await nums.athrow(e)
 
     print("stop")
 
-
-asyncio.run(main(1))
+try:
+    asyncio.run(main(1))
+except:
+    pass
