@@ -6,12 +6,18 @@ async def counter(q):
     while True:
         q.put_nowait(cnt)
         cnt += 1
-        await asyncio.sleep(1)
+        try:
+            await asyncio.sleep(1)
+        except asyncio.CancelledError:
+            return
 
 
 async def consumer(q):
     while True:
-        print(await q.get())
+        try:
+            print(await q.get())
+        except asyncio.CancelledError:
+            return
 
 
 async def main():
@@ -31,8 +37,12 @@ async def main():
         t.cancel()
 
     print("?")
+    await asyncio.gather(*tasks)
+    print("...")
+
     await asyncio.sleep(5)
     print("done")
+
 
 
 asyncio.run(main())
