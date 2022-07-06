@@ -28,14 +28,24 @@ events = sorted(map(process_event, events["events"]), key=lambda e: e["date"])
 activities = sorted(map(process_activity, activities["activities"]), key=lambda a: a["start"])
 orphaned = list()
 
+comparisons = 0
+
+a_start_idx = 0
 for e in events:
     cnt = 0
-    for a in activities:
-        if a["start"] <= e["date"] <= a["end"]:
+    for ai in range(a_start_idx, len(activities)):
+        a = activities[ai]
+        comparisons += 2
+        if a["start"] >= e["date"]:
+            a_start_idx = ai
+            comparisons -= 1
+        elif e["date"] <= a["end"]:
             a["events"].append(e)
             cnt += 1
     if not cnt:
         orphaned.append(e)
+
+print(comparisons)
 
 
 def process_activity_back(activity):
