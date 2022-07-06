@@ -39,23 +39,33 @@ class Foo(ACM):
 
 class Bar:
 
-    async def foo(self, name):
-        print("foo")
+    @staticmethod
+    async def create_foo(name):
         foo = Foo(name)
         await foo.__aenter__()
         return foo
+
+    @staticmethod
+    def foo(name):
+        return Foo(name)
 
 
 async def main():
     bar = Bar()
 
-    async with await bar.foo(1) as foo:
+    async with await bar.create_foo(1) as foo:
         print(foo)
-        raise Exception("a")
+        raise Exception()
 
     print("----------------")
 
-    foo = await bar.foo(2)
+    async with bar.foo(2) as foo:
+        print(foo)
+        raise Exception()
+
+    print("----------------")
+
+    foo = await bar.create_foo(3)
     print(foo)
     await foo.close()
 
