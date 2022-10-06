@@ -9,6 +9,7 @@ python = "^3.8"
 attrs = "^21.2.0"
 aiostream = "^0.4.4"
 mypy = "^0.920"
+aiohttp = "^3.8.3"
 
 [tool.poetry.dev-dependencies]
 
