@@ -27,8 +27,17 @@ async def main():
             print(c)
             await asyncio.sleep(1)
 
+    async def echo_file_sync():
+        with open("syncin.txt", "w+b") as f:
+            while True:
+                line = f.readline()
+                if line:
+                    print(line.decode("utf-8"))
+                else:
+                    await asyncio.sleep(FILE_READ_INTERVAL)
+
     async def echo_file():
-        async with aiofiles.open("somefile.txt", "w+b") as f:
+        async with aiofiles.open("asyncin.txt", "w+b") as f:
             while True:
                 line = await f.readline()
                 if line:
@@ -40,6 +49,7 @@ async def main():
         asyncio.create_task(counter()),
         asyncio.create_task(echo_stdin()),
         asyncio.create_task(echo_file()),
+        asyncio.create_task(echo_file_sync()),
     )
 
 
