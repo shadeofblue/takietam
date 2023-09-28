@@ -1,4 +1,5 @@
 import math
+import time
 
 FILL=" -+o%#@"
 
@@ -33,6 +34,12 @@ def mandel(x0, y0):
     return draw_value(i / MAX_ITER)
 
 
+
+from datetime import datetime
+
+
+start = datetime.now()
+
 for ys in range(0, SIZE_Y):
     y = Y_RANGE[0] + Y_STEP * ys
     for xs in range(0, SIZE_X):
@@ -40,4 +47,12 @@ for ys in range(0, SIZE_Y):
         output += mandel(x, y)
     output += "\n"
 
+
+
+
+
+end = datetime.now()
+
 print(output)
+
+print(end - start)
