@@ -2,6 +2,8 @@ import argparse
 import subprocess
 import time
 
+OUTFILE = "subprocess.out"
+ERRFILE = "subprocess.err"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-s", "--sleep-count", type=int, default=100)
@@ -21,22 +23,25 @@ if args.error_on:
 
 print(f"Launching: {cmd}, new_session={bool(args.new_session)}")
 
-proc = subprocess.Popen(
-    cmd,
-    stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE,
-    start_new_session=bool(args.new_session),
-)
+with open(OUTFILE, "w") as outfile, open(ERRFILE, "w") as errfile:
+    proc = subprocess.Popen(
+        cmd,
+        stdout=outfile,
+        stderr=errfile,
+        start_new_session=bool(args.new_session),
+    )
 
 launch_count = args.launch_count
 
 while launch_count > 0:
     try:
         out, err = proc.communicate(timeout=1)
-        print(
-            f"exited {launch_count}\n"
-            f"-- out --\n{out.decode('ascii')}\n-- err --\n{err.decode('ascii')}"
-        )
+        with open(OUTFILE, "r") as outfile, open(ERRFILE, "r") as errfile:
+            print(
+                f"exited {launch_count}\n"
+                f"-- out --\n{outfile.read()}\n-- err --\n{errfile.read()}"
+                f"-- out --\n{str(out)}\n-- err --\n{str(err)}"
+            )
         break
     except subprocess.TimeoutExpired:
         pass
