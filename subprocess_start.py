@@ -23,25 +23,22 @@ if args.error_on:
 
 print(f"Launching: {cmd}, new_session={bool(args.new_session)}")
 
-with open(OUTFILE, "w") as outfile, open(ERRFILE, "w") as errfile:
-    proc = subprocess.Popen(
-        cmd,
-        stdout=outfile,
-        stderr=errfile,
-        start_new_session=bool(args.new_session),
-    )
+proc = subprocess.Popen(
+    cmd,
+    stdout=open(OUTFILE, "w") ,
+    stderr=open(ERRFILE, "w"),
+    start_new_session=bool(args.new_session),
+)
 
 launch_count = args.launch_count
 
 while launch_count > 0:
     try:
-        out, err = proc.communicate(timeout=1)
-        with open(OUTFILE, "r") as outfile, open(ERRFILE, "r") as errfile:
-            print(
-                f"exited {launch_count}\n"
-                f"-- out --\n{outfile.read()}\n-- err --\n{errfile.read()}"
-                f"-- out --\n{str(out)}\n-- err --\n{str(err)}"
-            )
+        proc.communicate(timeout=1)
+        print(
+            f"exited {launch_count}\n"
+            f"-- out --\n{open(OUTFILE, 'r').read()}\n-- err --\n{open(ERRFILE, 'r').read()}"
+        )
         break
     except subprocess.TimeoutExpired:
         pass
