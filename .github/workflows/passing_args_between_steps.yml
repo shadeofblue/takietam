@@ -1,0 +1,33 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  aaa:
+    name: A test workflow
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set test output
+        run: echo "::set-output name=test::test output"
+        id: test
+      - name: Get DEV YAML image tag
+        run: echo "YAML_IMAGE_TAG=dupa" >> $GITHUB_ENV
+      - name: Set YAML image tag
+        run: echo "::set-output name=tag::$YAML_IMAGE_TAG"
+        id: yaml_image_tag
+      - name: Test env
+        run: echo ${{ env.YAML_IMAGE_TAG }}
+      - name: Test env2
+        run: echo $YAML_IMAGE_TAG
+      - name: Echo test output
+        run: echo ${{ steps.test.outputs.test}}
+      - name: Echo yaml image tag
+        run: echo ${{ steps.yaml_image_tag.outputs.tag}}
+      - name: Test is dupa
+        run: echo "is dupa"
+        if:
+          ${{ steps.yaml_image_tag.outputs.tag == 'dupa' }}
+      - name: Test is nothing
+        run: echo "is nothing"
+        if:
+          ${{ steps.yaml_image_tag.outputs.tag == '' }}
