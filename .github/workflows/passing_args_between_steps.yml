@@ -1,9 +1,13 @@
+name: Test dispatch workflow
 on:
   workflow_dispatch:
+    inputs:
+      foo:
+        required: true
 
 jobs:
   aaa:
-    name: A test workflow
+    name: A test workflow ${{ github.event.inputs.foo }}
     runs-on: ubuntu-latest
 
     steps:
