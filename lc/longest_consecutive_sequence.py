@@ -15,7 +15,32 @@ class NmapEntry:
     def __str__(self):
         return f"n={self.n}, prv={self.prv}, nxt={self.nxt}, length={self.length}"
 
+from typing import Dict, List
+
 class Solution:
+    def longestConsecutive(self, nums: List[int]) -> int:
+        nmap = {}
+        done = set()
+        maxl = 0
+        for num in nums:
+            if num in done:
+                continue
+            done.add(num)
+            plength = nmap.get(num - 1, 0)
+            nlength = nmap.get(num + 1, 0)
+            length = plength + nlength + 1
+            p = num - plength
+            n = num + nlength
+            if p not in nmap or nmap.get(p) < length:
+                nmap[p] = length
+            if n not in nmap or nmap.get(n) < length:
+                nmap[n] = length
+
+            # print(num, nmap)
+            maxl = max([maxl, length])
+
+        return maxl
+
     def longestConsecutiveSort(self, nums: List[int]) -> int:
         nums = sorted(nums)
         prev_n = None
@@ -33,7 +58,7 @@ class Solution:
                 prev_n = n
         return max([l, maxl])
 
-    def longestConsecutive(self, nums: List[int]) -> int:
+    def longestConsecutiveWtf(self, nums: List[int]) -> int:
         nmap: Dict[int, NmapEntry] = {}
         for i in range(len(nums)):
             nmap.setdefault(nums[i], NmapEntry(nums[i]))
