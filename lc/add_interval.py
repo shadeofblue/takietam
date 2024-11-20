@@ -49,7 +49,7 @@ class Solution:
 
         return [i.as_list() for i in new_intervals]
 
-    
+
 s = Solution()
 
 intervals = [[1, 3], [6, 9]]
