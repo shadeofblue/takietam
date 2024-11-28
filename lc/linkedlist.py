@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Iterator
 
 class ListNode:
     def __init__(self, x, ll: Optional["LinkedList"] = None):
@@ -31,8 +31,15 @@ class LinkedList:
 
     @property
     def head(self):
-        return self.__nodes[0]
+        return self.__nodes[0] if self.__nodes else None
 
     def set_pos(self, pos: int):
         if pos >= 0:
             self.__nodes[-1].next = self.__nodes[pos]
+
+
+def iterate(head: ListNode) -> Iterator:
+    while head:
+        yield head.val
+        head = head.next
+
