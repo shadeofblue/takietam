@@ -13,8 +13,8 @@ class TreeNode:
         return f"{self.val}"
 
 class Tree:
-    def __init__(self, vals: Optional[List] = None):
-        self._root: Optional[TreeNode] = None
+    def __init__(self, vals: Optional[List] = None, root: Optional[TreeNode] = None):
+        self._root: Optional[TreeNode] = root
         if vals:
             self.add_nodes(vals)
 
@@ -40,7 +40,7 @@ class Tree:
                 self._root = val
             else:
                 parents = nodes.get(level - 1)
-                parent_idx, dir_idx = divmod(vcnt, node_count)
+                parent_idx, dir_idx = divmod(vcnt, 2)
                 # print(f"---------add --- {level=}, {parents=}, {parent_idx=}, {dir_idx=}")
                 parent = parents[parent_idx]
                 if parent:
