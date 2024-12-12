@@ -13,7 +13,8 @@ class TreeNode:
         return f"{self.val}"
 
 class Tree:
-    def __init__(self, vals: Optional[List] = None, root: Optional[TreeNode] = None):
+    def __init__(self, vals: Optional[List] = None, root: Optional[TreeNode] = None, node_class = None):
+        self._node_class = type(root) if root else node_class or TreeNode
         self._root: Optional[TreeNode] = root
         if vals:
             self.add_nodes(vals)
@@ -31,7 +32,7 @@ class Tree:
         vcnt = 0
         for val in node_vals:
             if val is not None:
-                val = TreeNode(val)
+                val = self._node_class(val)
 
             nodes.setdefault(level, [])
             nodes[level].append(val)
